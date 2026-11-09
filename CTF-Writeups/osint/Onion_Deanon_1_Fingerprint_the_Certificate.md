@@ -1,12 +1,5 @@
 # Onion Deanon 1: Fingerprint the Certificate — Chronos Security CTF
 
-**Date:** [CONFIRM — exact solve date not recorded in my notes]
-**CTF:** Chronos Security CTF *(inferred from the `CSCTF{}` flag prefix and the `*.ctf.chronos-security.ro` challenge infrastructure seen across this event; not stated explicitly anywhere in my notes)*
-**Challenge:** Onion Deanon 1: Fingerprint the Certificate
-**Category:** OSINT
-**Author:** [CONFIRM — challenge author not recorded]
-**Team:** [CONFIRM — team name not recorded]
-**Writeup Author:** [CONFIRM — not recorded]
 
 ## Introduction
 
