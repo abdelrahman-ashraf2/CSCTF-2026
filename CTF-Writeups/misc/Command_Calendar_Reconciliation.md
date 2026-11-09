@@ -1,9 +1,9 @@
 # Command Calendar Reconciliation — CSCTF
 
-## 2. Introduction
+##  Introduction
 The challenge required reconstructing relay activations from an RFC 5545 calendar and submitting a strict JSON attestation. The critical details were recurrence expansion, exclusions, detached-instance replacement, and filtering by actual start time.
 
-## 3. Initial Reconnaissance
+##  Initial Reconnaissance
 Endpoints:
 - `GET /brief`
 - `GET /case.ics`
@@ -17,7 +17,7 @@ Window:
 
 Exactly 24 activation records were required, sorted by `start_utc`. The calendar contained three master events and two detached instances.
 
-## 4. Investigation
+##  Investigation
 The profile specified:
 - `DTSTART`, `RRULE`, and `RDATE` create nominal identities.
 - `EXDATE` removes an identity before detached replacement.
@@ -28,7 +28,7 @@ The three relay streams each contributed eight selected activations. One detache
 
 `dateutil.rrule 2.9.0.post0` handled RRULE expansion; `RDATE`, `EXDATE`, and detached replacements were handled manually.
 
-## 5. Exploitation
+##  Exploitation
 The selection logic filtered on actual DTSTART after replacement:
 
 ```python
@@ -56,19 +56,19 @@ Each relay contributed eight records. The POST request returned HTTP 200 and:
 CSCTF{sbt63pFxId9tsh7om1pFtP4F}
 ```
 
-## 6. What I Cannot Confirm
+##  What I Cannot Confirm
 Author and team were not provided. The notes state that the flag is instance-specific and changes after relaunch.
 
-## 7. Root Cause
+##  Root Cause
 This was a specification and data-processing challenge rather than a demonstrated software vulnerability. Incorrect ordering of exclusions, detached replacement, and window filtering would produce an invalid attestation.
 
-## 8. Validation
+##  Validation
 Confirmed: five VEVENTs, three masters, two detached instances, valid nominal identities, 24 records, sorted actual start times, HTTP 200, and returned authorization flag.
 
-## 9. Conclusion
+##  Conclusion
 Applying recurrence rules, exclusions, and detached replacements in the specified order produced the 24-record attestation accepted by the service.
 
-## 10. AI Methodology
+##  AI Methodology
 **AI contribution:** structured recurrence semantics, chronology, and validation narrative.
 
 **Personally verified:** parsing, recurrence expansion, identity assertions, detached replacement, record count, ordering, JSON generation, and HTTP response.
