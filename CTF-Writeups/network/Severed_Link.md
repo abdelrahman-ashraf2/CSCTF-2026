@@ -1,4 +1,4 @@
-## 1. Title + Metadata
+## 1. Title
 # Severed Link
 
 ## 2. Introduction
