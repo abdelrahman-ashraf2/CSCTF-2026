@@ -4,16 +4,32 @@
 
 ## Solution
 
-1. I followed process-creation events (`4688`) and PowerShell logs (`4104` and `4103`) on `OPS-NB-06`. They linked the fake CAPTCHA to a ClickFix/PowerShell infection and AnyDesk installation.
-2. I found the first flag piece, `f@k3_c@ptch@`, in the AnyDesk password evidence.
-3. I checked the scheduled task's description and recovered `_r3@l_m@lw@r3`. The description mattered more than the task name.
-4. I found `NVW-ADMIN-cl1ckf1xed` in the browser/admin evidence and used its suffix, `cl1ckf1xed`.
-5. I joined the pieces as `f@k3_c@ptch@` + `_r3@l_m@lw@r3` + `_cl1ckf1xed`, then added the flag wrapper. The full admin token and incident timestamp were not part of the answer.
+### 1. Rebuild the infection timeline
+
+I followed process creation and PowerShell activity on `OPS-NB-06`. The timeline began with Event ID 4688 at `2026-10-21 04:30:47.6252292 UTC`, followed by a PowerShell 4104 script-block event at `04:30:50.1868524 UTC`.
+
+I correlated 4688, 4104, and 4103 records to connect the fake CAPTCHA/ClickFix action to PowerShell download/execution and the AnyDesk installation.
+
+### 2. Recover the three flag pieces
+
+I checked the remote-access evidence, scheduled task description, and browser/admin artifacts:
+
+| Evidence | Recovered piece |
+|---|---|
+| AnyDesk password evidence | `f@k3_c@ptch@` |
+| Malicious scheduled task description | `_r3@l_m@lw@r3` |
+| Suffix of `NVW-ADMIN-cl1ckf1xed` | `cl1ckf1xed` |
+
+The task description mattered; inspecting only its name would have missed the middle piece.
+
+### 3. Assemble the flag
+
+I joined the pieces as `f@k3_c@ptch@` + `_r3@l_m@lw@r3` + `_cl1ckf1xed`, then added the flag wrapper.
+
+Earlier candidates used the full `NVW-ADMIN` token or an incident timestamp. Those were rejected. The three recovered pieces gave me the flag below.
 
 ## Flag
 
 ```text
 CSCTF{f@k3_c@ptch@_r3@l_m@lw@r3_cl1ckf1xed}
 ```
-
-> **Note:** I retained the recovered flag from my notes; the original Windows evidence was not included for a fresh check.

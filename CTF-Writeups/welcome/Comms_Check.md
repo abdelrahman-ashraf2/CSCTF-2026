@@ -4,14 +4,12 @@
 
 ## Solution
 
-1. I joined the official Chronos Security Discord and checked the event channels, including the ones inside collapsed categories.
-2. I opened the `#rules` channel topic. The flag was in the topic rather than the message history.
-3. I copied the complete flag from that topic.
+1. I joined the official Chronos Security Discord and looked through its channels.
+2. I opened `#rules` and checked the channel topic.
+3. The topic contained the complete flag, so I copied it from there. Searching message history alone would have missed it.
 
 ## Flag
 
 ```text
 CSCTF{comms_check_all_green_5f2c}
 ```
-
-> **Note:** I kept the flag from my saved solve notes. I do not have a screenshot of the original channel topic.
