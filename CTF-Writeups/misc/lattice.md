@@ -1,4 +1,4 @@
-## 1. Title + Metadata
+## 1. Title 
 # Lattice 
 
 ## 2. Introduction
