@@ -1,13 +1,5 @@
 # Operation Blackout — Chronos Security CTF
 
-**Date:** [CONFIRM — not recorded]
-**CTF:** Chronos Security CTF *(inferred from the `CSCTF{}` prefix)*
-**Challenge:** Operation Blackout
-**Category:** ICS / OT Security
-**Author:** [CONFIRM — not recorded]
-**Team:** [CONFIRM — not recorded]
-**Writeup Author:** [CONFIRM — not recorded]
-
 ## Introduction
 
 Five artifacts from one substation, describing the same power-loss incident from five different operational layers — an HMI config, an event log, an alarm file, a firmware image, and a network capture. The challenge statement spelled out the flag construction up front: the first 8 lowercase hex characters of `sha256("0x<FIRMWARE_FIRST_4_BYTES_UPPER_HEX>:0x<STATION_ID>:<LOG_TIMESTAMP>:<REGISTER_DECIMAL>:<SEED_DECIMAL>")`, with one named decoy (`scada_blackout_2026`) that must not enter the preimage. So the actual work wasn't guessing a scheme — it was pulling five specific fields out of five specific artifacts and making sure they agreed with each other before trusting any of them. This writeup follows the solve in the order the fields were recovered, including the one timestamp assumption that turned out to be wrong.
