@@ -1,4 +1,4 @@
-## 1. Title + Metadata
+## 1. Title 
 # Keyring 
 
 ## 2. Introduction
